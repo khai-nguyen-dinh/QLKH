@@ -14,11 +14,26 @@ import java.sql.DriverManager;
  */
 public class Connectdb {
 
+    public static String urlMienBac = "";
+    public static String urlMienNam = "";
+
     public static Connection getConnection() {
         Connection con = null;
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String dbURL = "jdbc:sqlserver://localhost:1433;databaseName=QLKH;user=sa;password=1234";
+            con = DriverManager.getConnection(dbURL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return con;
+    }
+
+    public static Connection getConnection(String url) {
+        Connection con = null;
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String dbURL = url;
             con = DriverManager.getConnection(dbURL);
         } catch (Exception e) {
             e.printStackTrace();

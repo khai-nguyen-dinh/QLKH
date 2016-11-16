@@ -6,10 +6,13 @@
 package controller;
 
 import dao.Connectdb;
+import dao.SanPhamDao;
+import dao.SanPhamDaoImpl;
 import dao.interactiveDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +30,9 @@ import model.ls_xuat;
  * @author khai
  */
 public class Controller extends HttpServlet {
-    
-    
+
+    SanPhamDao spd = new SanPhamDaoImpl();
+
     //bat su kien
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,11 +47,21 @@ public class Controller extends HttpServlet {
         if (action.equals("addnhanvien")) {
             addnhanvien(request, response);
         }
-        if (action.equals("addsanpham")) {
-            addsanpham(request, response);
-        }
         if (action.equals("logout")) {
             logout(request, response);
+        }
+        if (action.equals("addProduct")) {
+            ArrayList<Khohang> listkh = interactiveDB.allKhohang();
+            ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+            request.setAttribute("khohang", listkh);
+            request.setAttribute("loaisp", listl);
+            addProduct(request, response);
+        }
+        if (action.equals("deleteProduct")) {
+            spd.deleteSanPham(Integer.parseInt(request.getParameter("ma_sp")));
+            request.setAttribute("listProducts", spd.getAllSanPham(1));
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/mainnv.jsp");
+            rd.forward(request, response);
         }
     }
 
@@ -61,21 +75,21 @@ public class Controller extends HttpServlet {
         if (action.equals("dnnhanvien")) {
             dnNhanvien(request, response);
         }
-        
+        if (action.equals("addProduct")) {
+            saveProduct(request, response);
+        }
     }
-    
-    
+
     //dieu huong dang nhap
     protected void qlDangnhap(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         getServletContext().getRequestDispatcher("/dnquanly.jsp").forward(request, response);
     }
-    
+
     protected void nvDangnhap(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         getServletContext().getRequestDispatcher("/dnnhanvien.jsp").forward(request, response);
     }
-    
 
     //kiem tra dang nhap
     protected void dnQuanly(HttpServletRequest request, HttpServletResponse response)
@@ -83,7 +97,7 @@ public class Controller extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         Quanly ql = new Quanly(username, password);
-        if(interactiveDB.checkQuanly(ql) ==null){
+        if (interactiveDB.checkQuanly(ql) == null) {
             request.setAttribute("status", "sai tai khoan hoac mat khau!");
             getServletContext().getRequestDispatcher("/dnquanly.jsp").forward(request, response);
         }
@@ -94,7 +108,7 @@ public class Controller extends HttpServlet {
         ArrayList<Sanpham> listsp = interactiveDB.allSanpham();
         ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
         ArrayList<ls_xuat> listlx = interactiveDB.allLs_xuat();
-        
+
         request.setAttribute("nhanviens", listnv);
         request.setAttribute("khohangs", listkh);
         request.setAttribute("sanphams", listsp);
@@ -114,19 +128,74 @@ public class Controller extends HttpServlet {
         }
         HttpSession session = request.getSession();
         session.setAttribute("user", n);
+        request.setAttribute("listProducts", spd.getAllSanPham(1));
         getServletContext().getRequestDispatcher("/mainnv.jsp").forward(request, response);
     }
-    
+
     protected void addnhanvien(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         getServletContext().getRequestDispatcher("/addnhanvien.jsp").forward(request, response);
     }
-    protected void addsanpham(HttpServletRequest request, HttpServletResponse response)
+
+    protected void addProduct(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        getServletContext().getRequestDispatcher("/addsanpham.jsp").forward(request, response);
+        getServletContext().getRequestDispatcher("/addProduct.jsp").forward(request, response);
     }
+
     protected void logout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         getServletContext().getRequestDispatcher("/logout.jsp").forward(request, response);
+    }
+
+    protected void saveProduct(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String url = "";
+        String ten_sp = request.getParameter("ten_sp");
+        String ma_sp = request.getParameter("ma_sp");//i
+        String gia_sp = request.getParameter("gia_sp");//f
+        String nha_sx = request.getParameter("nha_sx");
+        String so_luong = request.getParameter("so_luong");//i
+        String kho_id = request.getParameterValues("kho_id")[0];//i
+        String loai_id = request.getParameterValues("loai_id")[0];//i
+
+        request.setAttribute("ten_sp", ten_sp);
+        request.setAttribute("ma_sp", ma_sp);
+        request.setAttribute("ma_sp", ma_sp);
+        request.setAttribute("gia_sp", gia_sp);
+        request.setAttribute("nha_sx", nha_sx);
+        request.setAttribute("so_luong", so_luong);
+
+        ArrayList<Khohang> listkh = interactiveDB.allKhohang();
+        ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+        request.setAttribute("khohang", listkh);
+        request.setAttribute("loaisp", listl);
+
+        boolean ok = true;
+        if (ten_sp.trim().length() == 0 || ma_sp.trim().length() == 0 || gia_sp.trim().length() == 0 || nha_sx.trim().length() == 0 || so_luong.trim().length() == 0 || kho_id.trim().length() == 0 || loai_id.trim().length() == 0) {
+            request.setAttribute("error", "Hãy điền đầy đủ form");
+            url = "/addProduct.jsp";
+            ok = false;
+        }
+        int maSP = 0, soLuong = 0, khoId = 0, loaiId = 0;
+        float giaSP = 0;
+        try {
+            maSP = Integer.parseInt(ma_sp);
+            giaSP = Float.parseFloat(gia_sp);
+            soLuong = Integer.parseInt(so_luong);
+            khoId = Integer.parseInt(kho_id);
+            loaiId = Integer.parseInt(loai_id);
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "Bạn nhập sai định dạng ít nhất một trường");
+            url = "/addProduct.jsp";
+            ok = false;
+        }
+
+        if (ok == true) {
+            spd.saveSanPham(new Sanpham(maSP, ten_sp, giaSP, nha_sx, soLuong, khoId, loaiId));
+            request.setAttribute("listProducts", spd.getAllSanPham(1));
+            url = "/mainnv.jsp";
+        }
+
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 }
