@@ -48,16 +48,7 @@
                     <td>Số lượng</td>
                     <td><input type="text" name="so_luong" value="${so_luong}"/></td>
                 </tr>
-                <tr>
-                    <td>Chọn kho hàng</td>
-                    <td>
-                        <select name="kho_id" id="kho_id">
-                            <c:forEach items="${khohang}" var="kho">
-                                <option  value="${kho.ma_kh}">${kho.ten_kh}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                </tr>
+              
 
                 <tr>
                     <td>Chọn loại sản phẩm</td>
