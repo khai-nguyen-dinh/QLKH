@@ -60,8 +60,19 @@ public class Controller extends HttpServlet {
         if (action.equals("deleteProduct")) {
             spd.deleteSanPham(Integer.parseInt(request.getParameter("ma_sp")));
             request.setAttribute("listProducts", spd.getAllSanPham(1));
+
+            ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+
+            request.setAttribute("loaisp", listl);
+
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/mainnv.jsp");
             rd.forward(request, response);
+        }
+        if (action.equals("mainnv")) {
+            ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+            request.setAttribute("loaisp", listl);
+            request.setAttribute("listProducts", spd.getAllSanPham(Integer.parseInt(request.getParameterValues("loai_id")[0])));
+            getServletContext().getRequestDispatcher("/mainnv.jsp").forward(request, response);
         }
     }
 
@@ -129,6 +140,10 @@ public class Controller extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("user", n);
         request.setAttribute("listProducts", spd.getAllSanPham(1));
+        ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+
+        request.setAttribute("loaisp", listl);
+
         getServletContext().getRequestDispatcher("/mainnv.jsp").forward(request, response);
     }
 
@@ -193,6 +208,8 @@ public class Controller extends HttpServlet {
         if (ok == true) {
             spd.saveSanPham(new Sanpham(maSP, ten_sp, giaSP, nha_sx, soLuong, khoId, loaiId));
             request.setAttribute("listProducts", spd.getAllSanPham(1));
+
+            request.setAttribute("loaisp", interactiveDB.allLoai_sp());
             url = "/mainnv.jsp";
         }
 

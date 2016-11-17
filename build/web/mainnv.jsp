@@ -30,6 +30,19 @@
             <input type="submit" value="Add product">
         </form>
 
+        <p>Lựa chọn: </p>
+
+        <form action="Controller" method="get">
+
+            <input type="hidden" name="action" value="mainnv">
+
+            <select name="loai_id" id="loai_id">
+                <c:forEach items="${loaisp}" var="loai">
+                    <option value="${loai.ma_l}">${loai.ten_l}</option>
+                </c:forEach>
+            </select>
+            <input type="submit" value="Search">
+        </form>
         <table >
             <tr>
                 <td>Mã sản phẩm</td>
