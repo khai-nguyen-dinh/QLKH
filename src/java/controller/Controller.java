@@ -85,19 +85,26 @@ public class Controller extends HttpServlet {
         }
         
         if (action.equals("updatesanpham")) {
-            updateNhanvien(request, response);
+            updateSanpham(request, response);
         }
 
         if (action.equals("deletesanpham")) {
-            deleteNhanvien(request, response);
+            deleteSanpham(request, response);
         }
 
-//        if (action.equals("mainnv")) {
-//            ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
-//            request.setAttribute("loaisp", listl);
-//            request.setAttribute("listProducts", spd.getAllSanPham(Integer.parseInt(request.getParameterValues("loai_id")[0])));
-//            getServletContext().getRequestDispatcher("/mainnv.jsp").forward(request, response);
-//        }
+        if (action.equals("updatelsp")) {
+            updateLsp(request, response);
+        }
+
+        if (action.equals("deletelsp")) {
+            deleteLsp(request, response);
+        }
+        if (action.equals("addsanpham")) {
+            addSanpham(request, response);
+        }
+        if (action.equals("updatekh")) {
+            updateKh(request, response);
+        }
     }
 
     @Override
@@ -122,6 +129,18 @@ public class Controller extends HttpServlet {
         }
         if (action.equals("updatenhanvien")) {
             updatedNhanvien(request, response);
+        }
+        if (action.equals("updatedSanpham")) {
+            updatedSanpham(request, response);
+        }
+        if (action.equals("updatedlsp")) {
+            updatedLsp(request, response);
+        }
+        if (action.equals("addedsanpham")) {
+            addedSanpham(request, response);
+        }
+        if (action.equals("updatedkh")) {
+            updatedKh(request, response);
         }
     }
     
@@ -363,4 +382,106 @@ public class Controller extends HttpServlet {
         show(request, response);
     }
     
+    
+    
+    protected void updateSanpham(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Sanpham s = interactiveDB.getSanpham(id);
+        ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+        request.setAttribute("loaisp", listl);
+        request.setAttribute("sp", s);
+        
+        getServletContext().getRequestDispatcher("/updatesp.jsp").forward(request, response);
+    }
+    protected void deleteSanpham(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        interactiveDB.deleteSanpham(id);
+        show(request, response);
+    }
+    
+    
+    protected void updatedSanpham(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int ma_sp = Integer.parseInt(request.getParameter("ma_sp"));
+        String ten_sp = request.getParameter("ten_sp");
+        float gia_sp = Float.parseFloat(request.getParameter("gia_sp"));
+        String nha_sx = request.getParameter("nha_sx");
+        int so_luong = Integer.parseInt(request.getParameter("so_luong"));
+        int ma_kh = Integer.parseInt(request.getParameter("ma_kh"));
+        int ma_l = Integer.parseInt(request.getParameter("ma_l"));
+       Sanpham s = new Sanpham(ma_sp, ten_sp, gia_sp, nha_sx, so_luong, ma_kh, ma_l);
+       interactiveDB.updateSanpham(s);
+        show(request, response);
+    }
+    
+    
+    protected void updateLsp(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        loai_sp l = interactiveDB.getLsp(id);
+        request.setAttribute("lsp", l);
+
+        getServletContext().getRequestDispatcher("/updatelsp.jsp").forward(request, response);
+    }
+
+    protected void deleteLsp(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        interactiveDB.deleteSanpham(id);
+        show(request, response);
+    }
+    protected void updatedLsp(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int ma_l = Integer.parseInt(request.getParameter("ma_l"));
+        String ten_l = request.getParameter("ten_l");
+        String mota = request.getParameter("mota");
+        loai_sp l = new loai_sp(ma_l, ten_l, mota);
+        interactiveDB.updateLsp(l);
+        show(request, response);
+    }
+    
+    protected void addSanpham(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ArrayList<loai_sp> listl = interactiveDB.allLoai_sp();
+        request.setAttribute("loaisp", listl);
+        getServletContext().getRequestDispatcher("/addsanpham.jsp").forward(request, response);
+    }
+    
+    
+    
+    
+    protected void addedSanpham(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int ma_sp = Integer.parseInt(request.getParameter("ma_sp"));
+        String ten_sp = request.getParameter("ten_sp");
+        float gia_sp = Float.parseFloat(request.getParameter("gia_sp"));
+        String nha_sx = request.getParameter("nha_sx");
+        int so_luong = Integer.parseInt(request.getParameter("so_luong"));
+        int ma_kh = Integer.parseInt(request.getParameter("ma_kh"));
+        int ma_l = Integer.parseInt(request.getParameter("ma_l"));
+        Sanpham s = new Sanpham(ma_sp, ten_sp, gia_sp, nha_sx, so_luong, ma_kh, ma_l);
+        interactiveDB.addSanpham(s);
+        show(request, response);
+    }
+    
+    
+    protected void updateKh(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Khohang k = interactiveDB.getKh(id);
+        request.setAttribute("kh", k);
+
+        getServletContext().getRequestDispatcher("/updatekh.jsp").forward(request, response);
+    }
+    protected void updatedKh(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int ma_kh = Integer.parseInt(request.getParameter("ma_kh"));
+        String ten_kh = request.getParameter("ten_kh");
+        String chi_nhanh = request.getParameter("chi_nhanh");
+        Khohang k = new Khohang(ma_kh, ten_kh, chi_nhanh);
+        interactiveDB.updateKh(k);
+        show(request, response);
+    }
 }

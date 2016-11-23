@@ -49,7 +49,7 @@
                 display: block;
                 overflow: auto;
                 width: 100%;
-                height: 100px;
+                height: 200px;
             }
             .fixed_headers tbody tr:nth-child(even) {
                 background-color: #dddddd;
@@ -66,12 +66,14 @@
         </style>
     </head>
     <body>
-        <h3>xin chao ${user.username}</h3>
+        <h3>xin chao <span style="color: gold">${user.username}</span></h3>
         <table border="1">
             <tr>
                 <td><a href="<c:url value="Controller?action=addnhanvien"/>">Them nhan vien</a></td>
                 <td><a href="<c:url value="Controller?action=addlsanpham"/>">Them loai san pham</a></td>
+                <td><a href="<c:url value="Controller?action=addsanpham"/>">Them san pham</a></td>
                 <td><a href="<c:url value="Controller?action=logout"/>">Logout</a></td>
+                
                 
             </tr>
         </table>
@@ -119,6 +121,7 @@
                         <td>${p.ma_kh}</td>
                         <td>${p.ten_kh}</td>
                         <td>${p.chi_nhanh}</td>
+                        <td><a href="<c:url value="Controller?action=updatekh&id=${p.ma_kh}"/>">update</a></td>
                     </tr>
                 </c:forEach>
             </tbody>
@@ -168,6 +171,8 @@
                         <td>${p.ma_l}</td>
                         <td>${p.ten_l}</td>
                         <td>${p.mota}</td>
+                        <td><a href="<c:url value="Controller?action=updatelsp&id=${p.ma_l}"/>">update</a></td>
+                        <td><a href="<c:url value="Controller?action=deletelsp&id=${p.ma_l}"/>">delete</a></td>
                     </tr>
                 </c:forEach>
             </tbody>
