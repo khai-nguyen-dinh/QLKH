@@ -13,7 +13,7 @@
         <title>JSP Page</title>
         <style>
             .fixed_headers {
-                width: 950px;
+                width: 750px;
                 table-layout: fixed;
                 border-collapse: collapse;
             }
@@ -38,7 +38,7 @@
                 width: 350px;
             }
             .fixed_headers thead {
-                background-color: #333333;
+                background-color: highlight;
                 color: #fdfdfd;
             }
             .fixed_headers thead tr {
@@ -56,7 +56,7 @@
             }
             .old_ie_wrapper {
                 height: 300px;
-                width: 750px;
+                width: 350px;
                 overflow-x: hidden;
                 overflow-y: auto;
             }
@@ -70,19 +70,14 @@
         <table border="1">
             <tr>
                 <td><a href="<c:url value="Controller?action=addnhanvien"/>">Them nhan vien</a></td>
-                <td><a href="<c:url value="Controller?action=addsanpham"/>">Them loai san pham</a></td>
+                <td><a href="<c:url value="Controller?action=addlsanpham"/>">Them loai san pham</a></td>
                 <td><a href="<c:url value="Controller?action=logout"/>">Logout</a></td>
                 
             </tr>
         </table>
     <center>
-        <h2>Table Nhan vien</h2>
+        <h2>Nhan vien</h2>
         <table class="fixed_headers">
-            <thead align="center">
-                <tr>
-                    <th>NHAN VIEN</th>
-                </tr>
-            </thead>
             <thead>
                 <tr>
                     <th>ma_nv</th>
@@ -100,18 +95,17 @@
                         <td>${p.username}</td>
                         <td>${p.password}</td>
                         <td>${p.ma_kh}</td>
+                        <td><a href="<c:url value="Controller?action=updatenhanvien&id=${p.ma_nv}"/>">update</a></td>
+                        <td><a href="<c:url value="Controller?action=deletenhanvien&id=${p.ma_nv}"/>">delete</a></td>
+                        
                     </tr>
                 </c:forEach>
             </tbody>
         </table>
         <!-- kho hang -->
-        <h2>Table Kho hang</h2>
+        <h2>Kho hang</h2>
         <table class="fixed_headers">
-            <thead align="center">
-                <tr>
-                    <th>KHO HANG</th>
-                </tr>
-            </thead>
+
             <thead>
                 <tr>
                     <th>ma_kh</th>
@@ -131,13 +125,9 @@
         </table>
 
         <!-- san pham -->
-        <h2>Table SAN PHAM</h2>
+        <h2>SAN PHAM</h2>
         <table class="fixed_headers">
-            <thead align="center">
-                <tr>
-                    <th>SAN PHAM</th>
-                </tr>
-            </thead>
+
             <thead>
                 <tr>
                     <th>ma_sp</th>
@@ -145,8 +135,6 @@
                     <th>gia_sp</th>
                     <th>nha_sx</th>
                     <th>so_luong</th>
-                    <th>ma_kh</th>
-                    <th>ma_l</th>
                     
                 </tr>
             </thead>
@@ -158,20 +146,15 @@
                         <td>${p.gia_sp}</td>
                         <td>${p.nha_sx}</td>
                         <td>${p.so_luong}</td>
-                        <td>${p.ma_kh}</td>
-                        <td>${p.ma_l}</td>
+                        <td><a href="<c:url value="Controller?action=updatesanpham&id=${p.ma_sp}"/>">update</a></td>
+                        <td><a href="<c:url value="Controller?action=deletesanpham&id=${p.ma_sp}"/>">delete</a></td>
                     </tr>
                 </c:forEach>
             </tbody>
         </table>
         <!-- loai -->
-        <h2>Table LOAI SAN PHAM</h2>
+        <h2>LOAI SAN PHAM</h2>
         <table class="fixed_headers">
-            <thead align="center">
-                <tr>
-                    <th>LOAI SAN PHAM</th>
-                </tr>
-            </thead>
             <thead>
                 <tr>
                     <th>ma_l</th>
@@ -190,13 +173,8 @@
             </tbody>
         </table>
         <!-- ls_xuat -->
-        <h2>Table LICH SU XUAT</h2>
+        <h2>LICH SU XUAT</h2>
         <table class="fixed_headers">
-            <thead align="center">
-                <tr>
-                    <th>LICH SU XUAT</th>
-                </tr>
-            </thead>
             <thead>
                 <tr>
                     <th>ma_ls</th>

@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,6 +19,13 @@
         <form action="Controller?action=dnnhanvien" method="POST">
             <input type="text" name="username" placeholder="user name"></br>
             <input type="password" name="password" placeholder="password"></br>
+            <p>Chon kho hang</p>
+            <select name="kho_id" id="kho_id">
+                <c:forEach items="${khos}" var="kho">
+                    <option value="${kho.ma_kh}">${kho.ten_kh}</option>
+                </c:forEach>
+            </select>
+            <br>
             <input type="submit" value="Login"></br>
         </form>
     </center>

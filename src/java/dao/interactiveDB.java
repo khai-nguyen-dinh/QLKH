@@ -45,25 +45,23 @@ public class interactiveDB {
         }
         return null;
     }
-    
-    
-    public static Nhanvien checkNhanvien(Nhanvien user) {
+
+    public static Nhanvien getNhanvien(int id) {
         Connection c = Connectdb.getConnection();
-        String sql = "select * from NHAN_VIEN where username = ? and password = ?";
+        String sql = "select * from NHAN_VIEN where ma_nv = ?";
         PreparedStatement ps;
         try {
             ps = c.prepareStatement(sql);
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("ma_nv");
+                int ma = rs.getInt("ma_nv");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 String ten = rs.getString("ten");
                 int ma_kh = rs.getInt("ma_kh");
                 int ma_ql = rs.getInt("ma_ql");
-                Nhanvien n = new Nhanvien(ma_ql, ten, username, password, ma_kh, ma_ql);
+                Nhanvien n = new Nhanvien(ma, ten, username, password, ma_kh, ma_ql);
                 return n;
             }
         } catch (SQLException ex) {
@@ -71,12 +69,45 @@ public class interactiveDB {
         }
         return null;
     }
-    public static ArrayList<Nhanvien> allNhanvien() {
-        ArrayList<Nhanvien> user = new ArrayList<>();
+
+    public static void updateNhanvien(Nhanvien user) {
         try {
             Connection c = Connectdb.getConnection();
-            String sql = "select * from NHAN_VIEN";
-            PreparedStatement ps =  c.prepareStatement(sql);
+            String sql = "UPDATE  NHAN_VIEN SET ten=?, username=?, password=?,ma_ql=?, ma_kh=? where ma_nv=?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(6, user.getMa_nv());
+            preparedStatement.setString(1, user.getTen());
+            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.setString(3, user.getPassword());
+            preparedStatement.setInt(4, user.getMa_ql());
+            preparedStatement.setInt(5, user.getMa_kh());
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteNhanvien(int id) {
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "DELETE FROM  NHAN_VIEN where ma_nv=?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Nhanvien checkNhanvien(Nhanvien user, int id_kh) {
+        Connection c = Connectdb.getConnection();
+        String sql = "select * from NHAN_VIEN where username = ? and password = ? and ma_kh = ?";
+        PreparedStatement ps;
+        try {
+            ps = c.prepareStatement(sql);
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setInt(3, id_kh);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("ma_nv");
@@ -85,16 +116,39 @@ public class interactiveDB {
                 String ten = rs.getString("ten");
                 int ma_kh = rs.getInt("ma_kh");
                 int ma_ql = rs.getInt("ma_ql");
-                Nhanvien n = new Nhanvien(ma_ql, ten, username, password, ma_kh, ma_ql);
+                Nhanvien n = new Nhanvien(id, ten, username, password, ma_kh, ma_ql);
+                return n;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(interactiveDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static ArrayList<Nhanvien> allNhanvien() {
+        ArrayList<Nhanvien> user = new ArrayList<>();
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "select * from NHAN_VIEN";
+            PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ma_nv");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String ten = rs.getString("ten");
+                int ma_kh = rs.getInt("ma_kh");
+                int ma_ql = rs.getInt("ma_ql");
+                Nhanvien n = new Nhanvien(id, ten, username, password, ma_kh, ma_ql);
                 user.add(n);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return user;
     }
-    
+
     public static ArrayList<Khohang> allKhohang() {
         ArrayList<Khohang> listkh = new ArrayList<>();
         try {
@@ -115,7 +169,7 @@ public class interactiveDB {
         }
         return listkh;
     }
-    
+
     public static ArrayList<Sanpham> allSanpham() {
         ArrayList<Sanpham> listsp = new ArrayList<>();
         try {
@@ -140,6 +194,69 @@ public class interactiveDB {
         }
         return listsp;
     }
+
+    public static void updateSanpham(Sanpham sp) {
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "UPDATE  SAN_PHAM SET ten_sp=?, gia_sp=?, nha_sx=?,so_luong=?, ma_kh=?, ma_l where ma_sp=?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(7, sp.getMa_sp());
+            preparedStatement.setString(1, sp.getTen_sp());
+            preparedStatement.setFloat(2, sp.getGia_sp());
+            preparedStatement.setString(3, sp.getNha_sx());
+            preparedStatement.setInt(4, sp.getSo_luong());
+            preparedStatement.setInt(5, sp.getMa_kh());
+            preparedStatement.setInt(5, sp.getMa_l());
+            
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteSanpham(int id) {
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "DELETE FROM  SAN_PHAM where ma_sp=?";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    
+    public static Sanpham getSanpham(int id) {
+        
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "select * from SAN_PHAM where id=?";
+            PreparedStatement ps;
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int ma_sp = rs.getInt("ma_sp");
+                String ten_sp = rs.getString("ten_sp");
+                float gia_sp = rs.getFloat("gia_sp");
+                String nha_sx = rs.getString("nha_sx");
+                int so_luong = rs.getInt("so_luong");
+                int ma_kh = rs.getInt("ma_kh");
+                int ma_l = rs.getInt("ma_l");
+                Sanpham s = new Sanpham(ma_sp, ten_sp, gia_sp, nha_sx, so_luong, ma_kh, ma_l);
+                return s;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    
+    
     
     
     public static ArrayList<loai_sp> allLoai_sp() {
@@ -153,7 +270,7 @@ public class interactiveDB {
                 int ma_l = rs.getInt("ma_l");
                 String ten_l = rs.getString("ten_l");
                 String mota = rs.getString("mota");
-                
+
                 loai_sp l = new loai_sp(ma_l, ten_l, mota);
                 listlsp.add(l);
             }
@@ -163,7 +280,7 @@ public class interactiveDB {
         }
         return listlsp;
     }
-    
+
     public static ArrayList<ls_xuat> allLs_xuat() {
         ArrayList<ls_xuat> listlx = new ArrayList<>();
         try {
@@ -185,5 +302,36 @@ public class interactiveDB {
         }
         return listlx;
     }
-    
+
+    public static void insertNhanvien(Nhanvien user) {
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "insert into NHAN_VIEN values(?, ?, ?, ?, ? ,?)";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1, user.getMa_nv());
+            preparedStatement.setString(2, user.getTen());
+            preparedStatement.setString(3, user.getUsername());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setInt(5, user.getMa_ql());
+            preparedStatement.setInt(6, user.getMa_kh());
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void insertLoai(loai_sp l) {
+        try {
+            Connection c = Connectdb.getConnection();
+            String sql = "insert into LOAI_SP values(?, ?, ?)";
+            PreparedStatement preparedStatement = c.prepareStatement(sql);
+            preparedStatement.setInt(1, l.getMa_l());
+            preparedStatement.setString(2, l.getTen_l());
+            preparedStatement.setString(3, l.getMota());
+            preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
